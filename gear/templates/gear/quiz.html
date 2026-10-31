@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BoxerGearLab — Подбор экипировки</title>
+    <!-- Подключаем Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.5net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow-sm p-4">
+                    <h2 class="text-center mb-4 text-dark fw-bold">BoxerGearLab</h2>
+                    <p class="text-muted text-center">Заполни параметры, чтобы подобрать идеальную экипировку на основе аналитики</p>
+                    
+                    <form method="POST" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <button type="submit" class="btn btn-dark w-100 py-2 mt-3">Подобрать экипировку</button>
+                    </form>
+                </div>
+
+                {% if recommendations is not None %}
+                    <div class="mt-5">
+                        <h3 class="mb-4">Результаты подбора:</h3>
+                        {% if recommendations %}
+                            <div class="row">
+                                {% for item in recommendations %}
+                                    <div class="col-md-6 mb-3">
+                                        <div class="card h-100 shadow-sm">
+                                            <div class="card-body">
+                                                <h5 class="card-title text-primary">{{ item.brand }} — {{ item.name }}</h5>
+                                                <h6 class="card-subtitle mb-2 text-muted">Категория: {{ item.category__name }}</h6>
+                                                <p class="card-text">{{ item.description }}</p>
+                                                <p class="fw-bold text-success">Цена: {{ item.price }} руб.</p>
+                                                {% if item.affiliate_link %}
+                                                    <a href="{{ item.affiliate_link }}" target="_blank" class="btn btn-outline-dark btn-sm">Купить товар</a>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="alert alert-warning" role="alert">
+                                По твоему бюджету ничего не найдено. Попробуй увеличить сумму!
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
